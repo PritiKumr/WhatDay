@@ -20,7 +20,10 @@ test:
   <<: *default
 
 production:
-  <<: *default
+  adapter: postgresql
+  encoding: unicode
+  database: whatday
+  pool: 5
 
 staging:
   <<: *default
