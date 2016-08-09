@@ -8,7 +8,8 @@ class Api::V1::UserController < Api::V1::ApplicationController
   end
 
   def state_logs
-    state = State.new(user_id: params[:user_id], state: params[:state_logs][:state], date: params[:state_logs][:date])
+    state = State.find_or_create_by(user_id: params[:user_id], date: params[:state_logs][:date])
+    state.state = params[:state_logs][:state]
     if state.save
       render json: { success: true, message: 'State logged successfully.'}, status: 200
     end
