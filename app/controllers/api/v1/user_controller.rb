@@ -1,9 +1,7 @@
 class Api::V1::UserController < Api::V1::ApplicationController
-  before_action :session_validate, except: [:login]
   before_action :set_user, except: [:login]
   def login
     @user = User.find_by(email: params[:user][:email])
-    session[:user_auth_token] = @user.token
     render '/api/v1/users/login.json.jbuilder'
   end
 
@@ -22,15 +20,8 @@ class Api::V1::UserController < Api::V1::ApplicationController
 
   private
 
-  def session_validate
-    if session[:user_auth_token] != request.headers["Access-Token"]
-      render json: { success: false, response: { message: 'Invalid User'}}, status: 400
-    end
-  end
-
   def set_user
-    return false unless session[:user_auth_token]
-    @current_user ||= User.find_by(token: session[:user_auth_token])
+    @current_user ||= User.find_by(token: request.headers["Access-Token"])
   end
 
 end
